@@ -1,5 +1,5 @@
 { 
-  "name": "",
+  "name": "goit-node-hw-1",
   "main": "index.js",
   "dependencies": {
     "nodemon": "^2.0.20"
