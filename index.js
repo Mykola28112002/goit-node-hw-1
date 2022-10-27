@@ -1,5 +1,4 @@
-const contactsOperation = require("./contacts");
-
+const contacts = require("./contacts");
 const { Command } = require("commander");
 const program = new Command();
 program
@@ -16,25 +15,45 @@ const argv = program.opts();
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
-      const contacts = await contactsOperation.listContacts();
-      console.table(contacts);
+      const contactList = await contacts.listContacts();
+      console.table(contactList);
       break;
 
     case "get":
-      const contact = await contactsOperation.getContactById(id);
-      console.log(contact);
+      if (!id) {
+        return console.log("param 'id' required");
+      }
+
+      const getContact = await contacts.getContactById(id);
+      if (!getContact) {
+        return console.log(`Contact with id: ${id} not found.`);
+      }
+
+      console.table(getContact);
       break;
 
     case "add":
-      const newContact = await contactsOperation.addContact(name, email, phone);
-      console.log(newContact);
+      if (!name || !email || !phone) {
+        return console.log("params 'name', 'email', 'phone' required");
+      }
+
+      const addContact = await contacts.addContact(name, email, phone);
+      console.table(addContact);
       break;
 
     case "remove":
-      const removeContact = await contactsOperation.removeContact(id);
-      console.log(removeContact);
-      break;
+      if (!id) {
+        return console.log("param 'id' required");
+      }
 
+      const removedContact = await contacts.removeContact(id);
+      if (!removedContact) {
+        return console.log(`Contact with id: ${id} not found.`);
+      }
+
+      console.table(removedContact);
+        break;
+      
     default:
       console.warn("\x1B[31m Unknown action type!");
   }
